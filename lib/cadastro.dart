@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart'; // Importa o material design do Flutter
-import 'contatos_repository.dart' // Importa o repositório de contatos
+import 'contato.dart';
+import 'contatos_repository.dart'; // Importa o repositório de contatos
 
 // Tela para cadastrar ou editar um contato
 class Cadastro extends StatefulWidget {
