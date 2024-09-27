@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart'; // Importa o material design do Flutter
-import 'contato.dart';
+import 'contato.dart'; // Importa a classe Contato
 import 'contatos_repository.dart'; // Importa o repositório de contatos
 
 // Tela para cadastrar ou editar um contato
@@ -37,6 +37,18 @@ class _CadastroState extends State<Cadastro> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.index == null ? 'Cadastrar Contato' : 'Editar Contato'), // Título do app
+        actions: [
+          if (widget.index != null) // Mostra botão de deletar se estiver editando
+            IconButton(
+              icon: Icon(Icons.delete), // Ícone de deletar
+              onPressed: () {
+                setState(() {
+                  widget.contatos.removeContato(widget.index!); // Remove o contato
+                });
+                Navigator.pop(context); // Volta para a tela anterior
+              },
+            )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0), // Espaçamento
