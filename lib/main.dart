@@ -1,60 +1,31 @@
-import 'package:flutter/material.dart'; // Importa o material design do Flutter
-import 'cadastro.dart'; // Importa a tela de cadastro
-import 'contatos_repository.dart'; // Importa o repositório de contatos
-import 'listagem.dart'; // Importa a tela de listagem
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'login.dart';
+import 'principal.dart';
 
 void main() {
-  runApp(MyApp()); // Inicia o app
+  runApp(MyApp());
 }
 
-// Classe principal do aplicativo
 class MyApp extends StatelessWidget {
+  Future<bool> _isLoggedIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey('username');
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Agenda de Contatos', // Título do app
-      home: Principal(), // Define a tela inicial
-    );
-  }
-}
-
-// Tela principal do app
-class Principal extends StatelessWidget {
-  final ContatosRepository contatos = ContatosRepository(); // Cria o repositório de contatos
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Principal'), // Título da barra superior
-      ),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              // Quando o botão é pressionado, vai para a tela de cadastro
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Cadastro(contatos: contatos), // Passa o repositório
-                ),
-              );
-            },
-            child: Text("Cadastrar Contato"), // Texto do botão
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Quando o botão é pressionado, vai para a tela de listagem
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Listagem(contatos: contatos), // Passa o repositório
-                ),
-              );
-            },
-            child: Text("Listar Contatos"), // Texto do botão
-          ),
-        ],
+      title: 'Agenda de Contatos',
+      home: FutureBuilder(
+        future: _isLoggedIn(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            return snapshot.data == true ? Principal() : Login();
+          }
+        },
       ),
     );
   }
