@@ -1,27 +1,23 @@
-import 'contato.dart'; // Importa a classe Contato
+import 'contato.dart';
+import 'package:sqflite/sqlite_api.dart';
+import 'database/apiDB.dart';
 
-// Classe que funciona como um repositório de contatos
 class ContatosRepository {
-  final List<Contato> _contatos = []; // Lista para armazenar os contatos
+  final ApiDB _db = ApiDB();
 
-  // Método para adicionar um novo contato
-  void addContato(Contato contato) {
-    _contatos.add(contato); // Adiciona o contato na lista
+  Future<void> addContato(Contato contato) async {
+    await _db.insertContato(contato);
   }
 
-  // Método para atualizar um contato existente
-  void updateContato(int index, Contato contato) {
-    _contatos[index] = contato; // Atualiza o contato na lista
+  Future<List<Contato>> getContatos() async {
+    return await _db.getContatos();
   }
 
-  // Método para remover um contato
-  void removeContato(int index) {
-    _contatos.removeAt(index); // Remove o contato da lista
+  Future<void> updateContato(Contato contato, Contato novoContato) async {
+    await _db.updateContato(contato);
   }
 
-  // Método para obter todos os contatos
-  List<Contato> getContatos() {
-    return _contatos; // Retorna a lista de contatos
+  Future<void> removeContato(int id) async {
+    await _db.deleteContato(id);
   }
 }
-

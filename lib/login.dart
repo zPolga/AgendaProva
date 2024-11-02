@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prova_agenda/principal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'listagem.dart';
-import 'contatos_repository.dart';
+import 'principal.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -13,16 +11,13 @@ class _LoginState extends State<Login> {
   final TextEditingController usernameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  // Função para salvar o nome de usuário como token
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('username', usernameController.text);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => Principal(),
-        ),
+        MaterialPageRoute(builder: (context) => Principal()),
       );
     }
   }
@@ -30,9 +25,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Login"),
-      ),
+      appBar: AppBar(title: Text("Login")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

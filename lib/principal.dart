@@ -11,17 +11,14 @@ class Principal extends StatelessWidget {
   Future<void> _logout(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('username');
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => Login()),
-    );
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Principal'),
+        title: Text('Agenda de Contatos'),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
@@ -33,23 +30,13 @@ class Principal extends StatelessWidget {
         children: [
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Cadastro(contatos: contatos),
-                ),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Cadastro(contatos: contatos)));
             },
             child: Text("Cadastrar Contato"),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Listagem(contatos: contatos),
-                ),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => listagem(contatos: contatos)));
             },
             child: Text("Listar Contatos"),
           ),

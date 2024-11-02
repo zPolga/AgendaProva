@@ -1,37 +1,60 @@
-import 'package:flutter/material.dart'; // Importa o material design do Flutter
-import 'contatos_repository.dart'; // Importa o repositório de contatos
-import 'cadastro.dart'; // Importa a tela de cadastro
-import 'contato.dart'; // Importa a classe Contato
+import 'package:flutter/material.dart';
+import 'contatos_repository.dart';
+import 'cadastro.dart';
+import 'contato.dart';
 
-// Tela para listar os contatos
-class Listagem extends StatelessWidget {
-  final ContatosRepository contatos; // Repositório de contatos
+class listagem extends StatefulWidget {
+  final ContatosRepository contatos;
 
-  Listagem({required this.contatos}); // Construtor da classe
+  listagem({required this.contatos});
+
+  @override
+  _ListagemState createState() => _ListagemState();
+}
+
+class _ListagemState extends State<listagem> {
+  late Future<List<Contato>> contatos;
+
+  @override
+  void initState() {
+    super.initState();
+    contatos = widget.contatos.getContatos(); // Carrega os contatos ao iniciar
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista de Contatos'), // Título da barra superior
+        title: Text('Lista de Contatos'),
       ),
-      body: ListView.builder(
-        itemCount: contatos.getContatos().length, // Conta quantos contatos tem
-        itemBuilder: (context, index) {
-          Contato c = contatos.getContatos()[index]; // Pega o contato atual
-          return ListTile(
-            title: Text(c.nome), // Mostra o nome do contato
-            subtitle: Text('${c.telefone} - ${c.email}'), // Mostra telefone e e-mail
-            onTap: () {
-              // Quando clicar no contato, abre a tela de edição
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Cadastro(contatos: contatos, index: index), // Passa o contato para editar
-                ),
-              );
-            },
-          );
+      body: FutureBuilder<List<Contato>>(
+        future: contatos,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Erro: ${snapshot.error}'));
+          } else {
+            final contatosList = snapshot.data!;
+            return ListView.builder(
+              itemCount: contatosList.length,
+              itemBuilder: (context, index) {
+                final c = contatosList[index];
+                return ListTile(
+                  title: Text(c.nome),
+                  subtitle: Text('${c.telefone} - ${c.email}'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Cadastro(contatos: widget.contatos, index: c.id),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          }
         },
       ),
     );

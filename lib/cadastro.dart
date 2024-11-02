@@ -25,26 +25,30 @@ class _CadastroState extends State<Cadastro> {
     super.initState();
     if (widget.index != null) {
       // Se estamos editando, preenche os campos com os dados do contato
-      final contato = widget.contatos.getContatos()[widget.index!]; // Pega o contato atual
-      nomeController.text = contato.nome; // Preenche o nome
-      telefoneController.text = contato.telefone; // Preenche o telefone
-      emailController.text = contato.email; // Preenche o e-mail
+      _loadContato();
     }
+  }
+
+  Future<void> _loadContato() async {
+    final contatosList = await widget.contatos.getContatos(); // Obtem a lista de contatos
+    final contato = contatosList[widget.index!]; // Acessa o contato pelo índice
+    nomeController.text = contato.nome; // Preenche o nome
+    telefoneController.text = contato.telefone; // Preenche o telefone
+    emailController.text = contato.email; // Preenche o e-mail
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.index == null ? 'Cadastrar Contato' : 'Editar Contato'), // Título do app
+        title: Text(
+            widget.index == null ? 'Cadastrar Contato' : 'Editar Contato'),
         actions: [
           if (widget.index != null) // Mostra botão de deletar se estiver editando
             IconButton(
               icon: Icon(Icons.delete), // Ícone de deletar
-              onPressed: () {
-                setState(() {
-                  widget.contatos.removeContato(widget.index!); // Remove o contato
-                });
+              onPressed: () async {
+                await widget.contatos.removeContato(widget.index!); // Remove o contato
                 Navigator.pop(context); // Volta para a tela anterior
               },
             )
@@ -57,7 +61,7 @@ class _CadastroState extends State<Cadastro> {
           child: Column(
             children: [
               TextFormField(
-                controller: nomeController, // Controlador do nome
+                controller: nomeController,
                 decoration: InputDecoration(labelText: 'Nome'), // Label do campo
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -67,11 +71,11 @@ class _CadastroState extends State<Cadastro> {
                 },
               ),
               TextFormField(
-                controller: telefoneController, // Controlador do telefone
+                controller: telefoneController,
                 decoration: InputDecoration(labelText: 'Telefone'), // Label do campo
               ),
               TextFormField(
-                controller: emailController, // Controlador do e-mail
+                controller: emailController,
                 decoration: InputDecoration(labelText: 'E-mail'), // Label do campo
               ),
               SizedBox(height: 20), // Espaço entre os campos e o botão
@@ -84,7 +88,7 @@ class _CadastroState extends State<Cadastro> {
                       email: emailController.text,
                     );
                     if (widget.index != null) {
-                      widget.contatos.updateContato(widget.index!, novoContato); // Atualiza contato
+                      widget.contatos.updateContato(widget.index! as Contato, novoContato); // Atualiza contato
                     } else {
                       widget.contatos.addContato(novoContato); // Adiciona novo contato
                     }
